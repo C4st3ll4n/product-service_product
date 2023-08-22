@@ -1,0 +1,28 @@
+version: '3'
+services:
+
+  database:
+    image: mongo:3
+    container_name: product_mongo
+    restart: always
+    volumes:
+      - ./mongoDB_data:/data
+    ports:
+      - "27017:27017"
+    networks:
+      - spring-mongo
+
+  product-service:
+    build: .
+    restart: unless-stopped
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    depends_on:
+      - database
+    ports:
+      - "8889:8080"
+    networks:
+      - spring-mongo
+
+networks:
+  spring-mongo:
